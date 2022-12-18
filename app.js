@@ -1,9 +1,23 @@
 const { ApolloServer, gql } = require('apollo-server-express');
+const mongoose = require('mongoose');
 const express = require('express');
 const resolvers = require('./resolver/resolver');
 const typeDefs = require('./schema/schema');
+require('dotenv').config();
 
+connectDB();
 startApolloServer();
+
+async function connectDB() {
+  try {
+    mongoose.set('strictQuery', false);
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('MongoDB connected!');
+  } catch (error) {
+    console.log('🚀 ~ error', error.message);
+    process.exit(1);
+  }
+}
 
 async function startApolloServer() {
   const app = express();
